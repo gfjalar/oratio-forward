@@ -1,12 +1,15 @@
 const SparkPost = require('sparkpost');
+const Giphy = require('giphy');
 const functions = require('firebase-functions');
 const moment = require('moment');
 
 const SPARKPOST_KEY = functions.config().sparkpost.key;
+const GIPHY_KEY = functions.config().giphy.key;
 const ADDRESS_KEY = functions.config().address.key;
 const DATETIME_FORMAT = functions.config().datetime.format;
 
 const sparkpost = new SparkPost(SPARKPOST_KEY);
+const giphy = new Giphy(GIPHY_KEY);
 
 class Payload {
   constructor(json) {
@@ -66,7 +69,7 @@ class Payload {
     }
   }
 
-  createTransmission(address) {
+  createTransmission(address, url) {
     return {
       content: {
         from: {
@@ -81,6 +84,8 @@ class Payload {
           <p align="right"><small>${this.datetime}</small></p>
           <hr>
           <p><i>View the conversation at <a href="https://app.orat.io/#/conversations?status=${this.json.conversation.status}&id=${this.json.conversation.id}">orat.io</a></i></p>
+          <hr>
+          <p align="middle"><img src="${url}" alt="Silicon Valley Hot Dog" border="0"></p>
         `
       },
       recipients: [{
@@ -95,9 +100,12 @@ const handleMessage = (request, response) => {
 
   const payload = new Payload(request.body);
   const address = request.get(ADDRESS_KEY);
-  sparkpost.transmissions.send(payload.createTransmission(address))
-    .then(console.log)
-    .catch(console.err);
+  giphy.random({ tag: 'silicon valley hot dog'}, (e, gif) => {
+    const url = gif && gif.data && gif.data.image_url ? gif.data.image_url : 'https://media.giphy.com/media/3ohzdXIKl0BjNK2g3m/giphy.gif';
+    sparkpost.transmissions.send(payload.createTransmission(address, url))
+      .then(console.log)
+      .catch(console.err);
+  });
 };
 
 exports.message = functions.https.onRequest(handleMessage);

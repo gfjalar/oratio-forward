@@ -47,6 +47,7 @@
 
             ```
             firebase functions:config:set sparkpost.key="YOUR SPARKPOST API KEY"
+            firebase functions:config:set giphy.key="YOUR GIPHY API KEY"
             firebase functions:config:set address.key="EMAIL ADDRESS HEADER KEY"
             firebase functions:config:set datetime.format="MOMENT'S DATETIME FORMAT"
             ```
@@ -65,7 +66,7 @@
 
 ## oratio
 
-1. Go to [integration settings](https://herakles.orat.io/account#/settings/integrations) at [orat.io](https://app.orat.io)
+1. Go to [integration settings](https://app.orat.io/account#/settings/integrations) at [orat.io](https://app.orat.io)
 
 2. Click `Open` on the `Custom Integration` box
 
