@@ -50,7 +50,20 @@ class Payload {
   }
 
   get datetime() {
-    return moment(this.json.message.createdAt, "x").format(DATETIME_FORMAT);
+    return moment(this.json.message.createdAt, 'x').format(DATETIME_FORMAT);
+  }
+
+  get color() {
+    switch (this.json.conversation.status) {
+      case 'unassigned':
+        return '#eb5b4d';
+      case 'new':
+      case 'in-progress':
+        return '#1e96c8';
+      case 'closed':
+      case 'automated':
+        return '#27ae60'
+    }
   }
 
   createTransmission(address) {
@@ -61,36 +74,14 @@ class Payload {
           email: `${this.json.conversation.id}@orat.io`
         },
         subject: `${this.json.account.name}: ${this.json.conversation.name}`,
-        html: `<html>
-          <style type="text/css">
-            .content {
-              width: 100%;
-              padding: 2rem;
-              border-style: solid;
-              border-width: 0.1rem;
-              border-radius: 1rem;
-            }
-            .unassigned {
-              background: #eb5b4d;
-              border-color: #9f9a99;
-            }
-            .new, .in-progress {
-              background: #1e96c8;
-              border-color: #6e7578;
-            }
-            .closed, .automated {
-              background: #27ae60;
-              border-color: #696c6a;
-            }
-          </style>
-          <body>
-            <p><b>${this.from}</b> said:</p>
-            <p class="content ${this.json.conversation.status}">${this.content}</p>
-            <p align="right"><small>${this.datetime}</small></p>
-            <hr>
-            <p><i>View the conversation at <a href="https://app.orat.io/#/conversations?status=${this.json.conversation.status}&id=${this.json.conversation.id}">orat.io</a></i></p>
-          </body>
-        </html>`
+        text: `${this.from} said:\n\n${this.content}\n\n${this.datetime}\n\nView the cconversation at https://app.orat.io/#/conversations?status=${this.json.conversation.status}&id=${this.json.conversation.id}`,
+        html: `
+          <p><b>${this.from}</b> said:</p>
+          <p style="padding: 2rem; border-style: solid; border-width: 0.1rem; border-radius: 1rem; border-color: ${this.color}">${this.content}</p>
+          <p align="right"><small>${this.datetime}</small></p>
+          <hr>
+          <p><i>View the conversation at <a href="https://app.orat.io/#/conversations?status=${this.json.conversation.status}&id=${this.json.conversation.id}">orat.io</a></i></p>
+        `
       },
       recipients: [{
         address: address
