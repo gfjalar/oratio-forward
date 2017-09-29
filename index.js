@@ -53,7 +53,7 @@ class Payload {
   }
 
   get datetime() {
-    return moment(this.json.message.createdAt, 'x').format(DATETIME_FORMAT);
+    return moment(this.json.message.created_at, 'x').format(DATETIME_FORMAT);
   }
 
   get color() {
