@@ -62,6 +62,7 @@ class Payload {
         return '#eb5b4d';
       case 'new':
       case 'in-progress':
+      case 'inbox':
         return '#1e96c8';
       case 'closed':
       case 'automated':
